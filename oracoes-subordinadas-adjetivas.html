@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orações Subordinadas Adjetivas</title>
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap');
+
+:root{
+  --paper: #FBF7EF;
+  --ink: #1F2A24;
+  --moss: #3C6E47;
+  --moss-dark: #244A30;
+  --terra: #C2542E;
+  --gold: #D9A441;
+  --thread: #B7AE9A;
+  --card: #FFFFFF;
+  --line: rgba(31,42,36,0.14);
+  --shadow: 0 1px 0 rgba(31,42,36,0.05);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Space Grotesk', sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+::selection{ background: var(--gold); color:var(--ink); }
+
+/* ---------- Texture ---------- */
+.grain{
+  position:fixed; inset:0; pointer-events:none; z-index:999; opacity:0.035; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+a{color:inherit;}
+
+/* ---------- Nav ---------- */
+nav{
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 6vw;
+  background:rgba(251,247,239,0.86);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.brand{
+  font-family:'Fraunces', serif; font-weight:600; font-size:1.25rem; letter-spacing:-0.01em;
+  display:flex; align-items:center; gap:10px;
+}
+.brand .mark{
+  width:30px;height:30px;border-radius:50%;
+  background: conic-gradient(from 200deg, var(--moss), var(--gold), var(--terra), var(--moss));
+  flex-shrink:0;
+}
+.navlinks{ display:flex; gap:28px; font-size:0.92rem; }
+.navlinks a{
+  text-decoration:none; color:var(--ink); opacity:0.75; position:relative; padding-bottom:4px;
+  transition:opacity .2s;
+}
+.navlinks a:hover{opacity:1;}
+.navlinks a::after{
+  content:''; position:absolute; left:0; bottom:0; width:0; height:1.5px; background:var(--terra);
+  transition:width .25s ease;
+}
+.navlinks a:hover::after{width:100%;}
+@media (max-width:760px){ .navlinks{display:none;} }
+
+/* ---------- Hero ---------- */
+.hero{
+  position:relative;
+  padding:9vh 6vw 8vh;
+  display:grid; grid-template-columns:1.15fr 0.85fr; gap:4vw; align-items:center;
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+}
+.hero::before{
+  content:''; position:absolute; right:-10%; top:-20%; width:520px; height:520px; border-radius:50%;
+  background:radial-gradient(circle at 35% 35%, rgba(217,164,65,0.35), rgba(217,164,65,0) 70%);
+  z-index:0;
+}
+.eyebrow{
+  font-family:'JetBrains Mono', monospace; text-transform:uppercase; letter-spacing:0.14em;
+  font-size:0.72rem; color:var(--moss-dark); display:flex; align-items:center; gap:10px;
+}
+.eyebrow::before{ content:''; width:22px; height:1px; background:var(--terra); display:inline-block; }
+.hero h1{
+  font-family:'Fraunces', serif; font-weight:300; font-size:clamp(2.4rem, 5vw, 4.1rem);
+  line-height:1.04; letter-spacing:-0.01em; margin:0.5rem 0 1.2rem; position:relative; z-index:1;
+}
+.hero h1 em{
+  font-style:italic; font-weight:600; color:var(--moss-dark);
+  background:linear-gradient(180deg, transparent 62%, rgba(217,164,65,0.4) 62%);
+}
+.hero p.lede{
+  font-size:1.08rem; line-height:1.65; max-width:46ch; color:rgba(31,42,36,0.78); position:relative; z-index:1;
+}
+.hero .cta-row{ display:flex; gap:14px; margin-top:2rem; flex-wrap:wrap; position:relative; z-index:1; }
+.btn{
+  font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:0.92rem;
+  padding:13px 24px; border-radius:30px; border:1.5px solid var(--ink); cursor:pointer;
+  background:transparent; color:var(--ink); text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+  transition:all .22s ease;
+}
+.btn.solid{ background:var(--moss-dark); border-color:var(--moss-dark); color:#fff; }
+.btn:hover{ transform:translateY(-2px); box-shadow:0 6px 18px rgba(31,42,36,0.16); }
+.btn.solid:hover{ background:var(--terra); border-color:var(--terra); }
+
+/* sentence diagram visual */
+.diagram{
+  position:relative; z-index:1; background:var(--card); border:1px solid var(--line); border-radius:18px;
+  padding:2rem 1.6rem; box-shadow:0 18px 50px -22px rgba(31,42,36,0.25);
+}
+.diagram .tag{ font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--thread); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:1rem; }
+.sentence{ font-family:'Fraunces', serif; font-size:1.32rem; line-height:2.6; }
+.chunk{ position:relative; padding:0 2px; }
+.chunk.core{ color:var(--ink); }
+.chunk.rel{ color:var(--moss-dark); font-weight:600; }
+.chunk.sub{ color:var(--terra); font-weight:600; border-bottom:2px dashed var(--terra); }
+.label{
+  display:block; font-family:'JetBrains Mono',monospace; font-size:0.62rem; text-transform:uppercase;
+  letter-spacing:0.06em; color:var(--thread); margin-top:0.4rem;
+}
+.label.relL{color:var(--moss-dark);}
+.label.subL{color:var(--terra);}
+
+/* ---------- Section shells ---------- */
+section{ padding:8vh 6vw; }
+.section-head{ max-width:64ch; margin-bottom:3.2rem; }
+.section-head .eyebrow{ margin-bottom:0.6rem; }
+.section-head h2{
+  font-family:'Fraunces', serif; font-weight:500; font-size:clamp(1.9rem, 3.4vw, 2.6rem);
+  margin:0 0 0.6rem; letter-spacing:-0.01em;
+}
+.section-head p{ color:rgba(31,42,36,0.7); line-height:1.6; font-size:1.02rem; }
+
+/* ---------- Conceito ---------- */
+.conceito{ background:var(--card); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.concept-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:2.2rem; }
+@media (max-width:820px){ .concept-grid{grid-template-columns:1fr;} }
+.concept-card{
+  border:1px solid var(--line); border-radius:16px; padding:1.8rem 1.7rem; background:var(--paper);
+  position:relative; transition:transform .25s ease, box-shadow .25s ease;
+}
+.concept-card:hover{ transform:translateY(-4px); box-shadow:0 14px 30px -18px rgba(31,42,36,0.3); }
+.concept-card .num{
+  font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--terra); letter-spacing:0.08em;
+}
+.concept-card h3{ font-family:'Fraunces',serif; font-size:1.25rem; margin:0.5rem 0 0.7rem; font-weight:600; }
+.concept-card p{ font-size:0.95rem; line-height:1.6; color:rgba(31,42,36,0.75); margin:0 0 0.9rem; }
+.ex-box{
+  font-family:'Fraunces', serif; font-style:italic; font-size:1.02rem; background:#fff; border-left:3px solid var(--gold);
+  padding:0.7rem 1rem; border-radius:4px;
+}
+.ex-box .rel{ color:var(--moss-dark); font-weight:600; font-style:normal; }
+.ex-box .adj{ color:var(--terra); font-weight:600; font-style:normal; text-decoration:underline; text-decoration-color:rgba(194,84,46,0.4); text-decoration-thickness:2px;}
+
+/* pronome relativo chips */
+.chips{ display:flex; flex-wrap:wrap; gap:10px; margin-top:1.4rem; }
+.chip{
+  font-family:'JetBrains Mono',monospace; font-size:0.85rem; padding:7px 14px; border-radius:20px;
+  background:var(--moss-dark); color:#fff; cursor:default;
+}
+.chip.alt{ background:var(--terra); }
+
+/* ---------- Restritiva x Explicativa ---------- */
+.compare{ display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+@media (max-width:820px){ .compare{grid-template-columns:1fr;} }
+.compare-card{ border-radius:16px; padding:2rem; position:relative; overflow:hidden; }
+.compare-card.restritiva{ background:linear-gradient(165deg, #2c4f37, var(--moss-dark)); color:#fff; }
+.compare-card.explicativa{ background:linear-gradient(165deg, #d9a441, #c2542e); color:#fff; }
+.compare-card h3{ font-family:'Fraunces',serif; font-size:1.4rem; margin:0 0 0.3rem; }
+.compare-card .sub-tag{ font-family:'JetBrains Mono',monospace; font-size:0.7rem; text-transform:uppercase; opacity:0.85; letter-spacing:0.08em;}
+.compare-card p{ line-height:1.65; font-size:0.96rem; margin-top:1rem; opacity:0.95; }
+.compare-card .mini-ex{ background:rgba(255,255,255,0.16); border-radius:10px; padding:0.9rem 1.1rem; margin-top:1.1rem; font-family:'Fraunces',serif; font-style:italic; font-size:1rem; }
+
+/* ---------- Quiz ---------- */
+.quiz-wrap{ background:var(--ink); color:var(--paper); border-radius:24px; padding:4vh 5vw; position:relative; overflow:hidden;}
+.quiz-wrap::before{
+  content:''; position:absolute; left:-8%; bottom:-30%; width:420px; height:420px; border-radius:50%;
+  background:radial-gradient(circle, rgba(217,164,65,0.18), transparent 70%);
+}
+.quiz-head{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem; margin-bottom:2rem; position:relative; z-index:1;}
+.quiz-head h2{ font-family:'Fraunces',serif; font-weight:500; font-size:clamp(1.8rem,3vw,2.3rem); margin:0; color:#fff;}
+.progress-track{
+  font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--gold); display:flex; align-items:center; gap:10px;
+}
+.progress-bar{ width:140px; height:5px; border-radius:6px; background:rgba(255,255,255,0.15); overflow:hidden;}
+.progress-fill{ height:100%; background:var(--gold); width:0%; transition:width .4s ease; }
+
+#quiz-area{ position:relative; z-index:1; }
+.question-card{ display:none; }
+.question-card.active{ display:block; animation:fadein .4s ease; }
+@keyframes fadein{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+.q-tag{ font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--gold); text-transform:uppercase; letter-spacing:0.1em; }
+.q-text{ font-family:'Fraunces',serif; font-size:clamp(1.2rem,2.2vw,1.55rem); line-height:1.45; margin:0.8rem 0 1.8rem; max-width:62ch;}
+.options{ display:flex; flex-direction:column; gap:12px; max-width:640px;}
+.opt{
+  text-align:left; padding:14px 18px; border-radius:12px; border:1.5px solid rgba(251,247,239,0.22);
+  background:rgba(251,247,239,0.04); color:var(--paper); font-family:'Space Grotesk',sans-serif; font-size:0.98rem;
+  cursor:pointer; transition:all .2s ease; display:flex; gap:12px; align-items:flex-start;
+}
+.opt .letter{
+  font-family:'JetBrains Mono',monospace; font-size:0.8rem; width:22px; height:22px; border-radius:50%;
+  border:1px solid rgba(251,247,239,0.4); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;
+}
+.opt:hover{ background:rgba(251,247,239,0.1); border-color:rgba(251,247,239,0.4); }
+.opt.correct{ background:rgba(60,110,71,0.5); border-color:var(--moss); }
+.opt.wrong{ background:rgba(194,84,46,0.45); border-color:var(--terra); }
+.opt.disabled{ cursor:default; pointer-events:none; }
+.feedback{
+  margin-top:1.3rem; padding:1rem 1.2rem; border-radius:10px; font-size:0.92rem; line-height:1.55;
+  display:none; max-width:640px;
+}
+.feedback.show{ display:block; animation:fadein .3s ease; }
+.feedback.ok{ background:rgba(60,110,71,0.25); border-left:3px solid var(--moss); }
+.feedback.bad{ background:rgba(194,84,46,0.22); border-left:3px solid var(--terra); }
+.quiz-nav{ display:flex; justify-content:space-between; align-items:center; margin-top:2rem; max-width:640px; }
+.quiz-btn{
+  font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:0.88rem; padding:11px 22px; border-radius:24px;
+  border:1.5px solid var(--gold); background:transparent; color:var(--gold); cursor:pointer; transition:all .2s ease;
+}
+.quiz-btn:hover{ background:var(--gold); color:var(--ink); }
+.quiz-btn:disabled{ opacity:0.3; cursor:not-allowed; }
+.quiz-btn:disabled:hover{ background:transparent; color:var(--gold); }
+.score-pill{ font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--paper); opacity:0.8;}
+
+.result-card{ display:none; text-align:center; padding:3rem 1rem; position:relative; z-index:1;}
+.result-card.active{ display:block; animation:fadein .5s ease;}
+.result-card .big{ font-family:'Fraunces',serif; font-size:clamp(2.6rem,7vw,4rem); color:var(--gold); }
+.result-card p{ color:var(--paper); opacity:0.85; max-width:50ch; margin:0.6rem auto 1.6rem; line-height:1.6;}
+
+/* ---------- Roleta ---------- */
+.roleta-section{ border-top:1px solid var(--line); }
+.roleta-grid{ display:grid; grid-template-columns:0.95fr 1.05fr; gap:4vw; align-items:center; }
+@media (max-width:900px){ .roleta-grid{grid-template-columns:1fr;} }
+
+.wheel-stage{ display:flex; flex-direction:column; align-items:center; gap:1.6rem; position:relative; }
+.wheel-frame{ position:relative; width:min(420px, 90vw); aspect-ratio:1/1; }
+.pointer{
+  position:absolute; top:-6px; left:50%; transform:translateX(-50%); z-index:5;
+  width:0; height:0; border-left:14px solid transparent; border-right:14px solid transparent;
+  border-top:26px solid var(--terra); filter:drop-shadow(0 3px 4px rgba(0,0,0,0.25));
+}
+#wheelCanvas{ width:100%; height:100%; border-radius:50%; box-shadow:0 25px 60px -20px rgba(31,42,36,0.4), 0 0 0 8px var(--card), 0 0 0 9px var(--line); transition:transform 4.2s cubic-bezier(.17,.89,.32,1.13); }
+.hub{
+  position:absolute; top:50%; left:50%; width:64px; height:64px; transform:translate(-50%,-50%);
+  background:var(--card); border-radius:50%; box-shadow:0 2px 10px rgba(0,0,0,0.25);
+  display:flex; align-items:center; justify-content:center; z-index:4;
+  font-family:'Fraunces',serif; font-weight:700; color:var(--moss-dark); font-size:0.7rem; text-align:center; line-height:1.1;
+}
+.spin-btn{
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.02rem; padding:15px 38px; border-radius:30px;
+  border:none; background:var(--terra); color:#fff; cursor:pointer; letter-spacing:0.01em;
+  box-shadow:0 10px 24px -8px rgba(194,84,46,0.55); transition:transform .2s ease, box-shadow .2s ease;
+}
+.spin-btn:hover{ transform:translateY(-2px) scale(1.02); }
+.spin-btn:disabled{ opacity:0.55; cursor:not-allowed; transform:none; }
+
+.winner-banner{
+  min-height:64px; display:flex; align-items:center; justify-content:center; text-align:center;
+  font-family:'Fraunces',serif; font-size:1.3rem; color:var(--moss-dark); font-weight:600;
+}
+.winner-banner .name-reveal{ color:var(--terra); }
+
+.roster-panel{ background:var(--card); border:1px solid var(--line); border-radius:18px; padding:1.8rem; }
+.roster-panel h3{ font-family:'Fraunces',serif; margin:0 0 0.3rem; font-size:1.2rem; }
+.roster-panel .hint{ font-size:0.86rem; color:rgba(31,42,36,0.6); margin-bottom:1.2rem; }
+.roster-list{ list-style:none; margin:0; padding:0; max-height:330px; overflow-y:auto; display:flex; flex-direction:column; gap:6px; }
+.roster-list li{
+  display:flex; justify-content:space-between; align-items:center; padding:9px 12px; border-radius:9px;
+  background:var(--paper); font-size:0.9rem; transition:opacity .25s, text-decoration-color .25s;
+}
+.roster-list li.picked{ opacity:0.45; text-decoration:line-through; }
+.roster-list li .idx{ font-family:'JetBrains Mono',monospace; color:var(--thread); font-size:0.78rem; margin-right:10px;}
+.roster-list li button{
+  font-family:'JetBrains Mono',monospace; font-size:0.68rem; border:none; background:none; color:var(--moss-dark);
+  cursor:pointer; opacity:0.6; text-transform:uppercase;
+}
+.roster-list li button:hover{ opacity:1; }
+.roster-actions{ display:flex; gap:10px; margin-top:1.2rem; }
+.ghost-btn{
+  font-family:'JetBrains Mono',monospace; font-size:0.74rem; text-transform:uppercase; letter-spacing:0.05em;
+  padding:9px 14px; border-radius:8px; border:1px solid var(--line); background:transparent; color:var(--ink);
+  cursor:pointer; transition:all .2s ease;
+}
+.ghost-btn:hover{ background:var(--ink); color:#fff; border-color:var(--ink); }
+
+/* ---------- Footer ---------- */
+footer{
+  padding:5vh 6vw; border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;
+  flex-wrap:wrap; gap:1rem; font-size:0.85rem; color:rgba(31,42,36,0.6);
+}
+footer .brand{ font-size:1rem; }
+
+@media (max-width:760px){
+  .hero{ grid-template-columns:1fr; padding-top:6vh; }
+  section{ padding:6vh 6vw; }
+}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<nav>
+  <div class="brand"><span class="mark"></span> Subordinada Adjetiva</div>
+  <div class="navlinks">
+    <a href="#conceito">O que é</a>
+    <a href="#pronomes">Pronomes relativos</a>
+    <a href="#tipos">Restritiva × Explicativa</a>
+    <a href="#quiz">Questões</a>
+    <a href="#roleta">Roleta</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div>
+    <span class="eyebrow">Sintaxe do período composto</span>
+    <h1>A oração que <em>qualifica</em>,<br>a vírgula que <em>explica</em>.</h1>
+    <p class="lede">Toda oração subordinada adjetiva funciona como um adjetivo dentro da frase: ela vem para caracterizar um substantivo ou pronome da oração principal — quase sempre presa a um pronome relativo como <strong>que</strong>, <strong>quem</strong>, <strong>cujo</strong> ou <strong>onde</strong>.</p>
+    <div class="cta-row">
+      <a href="#conceito" class="btn solid">Estudar a teoria ↓</a>
+      <a href="#quiz" class="btn">Ir direto às questões</a>
+    </div>
+  </div>
+
+  <div class="diagram">
+    <span class="tag">// análise sintática</span>
+    <div class="sentence">
+      <span class="chunk core">O professor elogiou o aluno</span>
+      <span class="chunk rel">que</span>
+      <span class="chunk sub">resolveu o exercício mais difícil</span>.
+    </div>
+    <span class="label">↳ oração principal</span>
+    <span class="label relL">↳ pronome relativo (retoma "o aluno")</span>
+    <span class="label subL">↳ oração subordinada adjetiva (caracteriza "o aluno")</span>
+  </div>
+</section>
+
+<section id="conceito" class="conceito">
+  <div class="section-head">
+    <span class="eyebrow">01 — Conceito</span>
+    <h2>Por que ela existe na frase?</h2>
+    <p>A subordinada adjetiva não tem vida própria: ela depende de um substantivo (ou pronome) da oração anterior, chamado <strong>antecedente</strong>, e quase sempre é introduzida por um pronome relativo. Pense nela como um adjetivo "esticado" em forma de oração.</p>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <span class="num">A</span>
+      <h3>Ela substitui um adjetivo</h3>
+      <p>Tudo que uma adjetiva faz, um simples adjetivo também poderia fazer — só que de forma mais longa e detalhada.</p>
+      <div class="ex-box">O livro <span class="adj">interessante</span> venceu o prêmio. <br>↳ O livro <span class="rel">que</span> <span class="adj">fala sobre a guerra</span> venceu o prêmio.</div>
+    </div>
+
+    <div class="concept-card">
+      <span class="num">B</span>
+      <h3>Ela depende de um antecedente</h3>
+      <p>O pronome relativo sempre retoma um termo já citado — pessoa, lugar, objeto ou ideia — e evita repetir esse termo.</p>
+      <div class="ex-box">Visitei a cidade. A cidade tem praias lindas. <br>↳ Visitei a cidade <span class="rel">que</span> tem praias lindas.</div>
+    </div>
+
+    <div class="concept-card">
+      <span class="num">C</span>
+      <h3>Ela une duas ideias em uma frase</h3>
+      <p>Sem o pronome relativo, seriam duas frases soltas. Com ele, as ideias se conectam em um único período composto.</p>
+      <div class="ex-box">Conheço o médico. O médico te atendeu. <br>↳ Conheço o médico <span class="rel">que</span> te atendeu.</div>
+    </div>
+
+    <div class="concept-card">
+      <span class="num">D</span>
+      <h3>Tem função sintática própria</h3>
+      <p>Dentro da oração adjetiva, o pronome relativo também exerce uma função: sujeito, objeto, complemento etc.</p>
+      <div class="ex-box">A casa <span class="rel">onde</span> nasci foi vendida. <br>↳ "onde" = adjunto adverbial de lugar dentro da adjetiva.</div>
+    </div>
+  </div>
+</section>
+
+<section id="pronomes">
+  <div class="section-head">
+    <span class="eyebrow">02 — Conectivos</span>
+    <h2>Os pronomes relativos</h2>
+    <p>São a porta de entrada da oração adjetiva. Cada um deles "olha para trás" e recupera um antecedente específico.</p>
+  </div>
+
+  <div class="chips">
+    <span class="chip">que</span>
+    <span class="chip">quem</span>
+    <span class="chip">o qual / a qual</span>
+    <span class="chip">os quais / as quais</span>
+    <span class="chip alt">cujo / cuja</span>
+    <span class="chip alt">quanto(s) / quanta(s)</span>
+    <span class="chip alt">onde</span>
+    <span class="chip alt">quando</span>
+    <span class="chip alt">como</span>
+  </div>
+
+  <div class="concept-grid" style="margin-top:2.2rem;">
+    <div class="concept-card">
+      <h3>que</h3>
+      <p>O mais usado; substitui pessoas ou coisas.</p>
+      <div class="ex-box">A prova <span class="rel">que</span> fizemos era difícil.</div>
+    </div>
+    <div class="concept-card">
+      <h3>cujo / cuja</h3>
+      <p>Indica posse — equivale a "do qual", "da qual". Concorda com o substantivo que vem depois dele, nunca com o antecedente.</p>
+      <div class="ex-box">O autor <span class="rel">cujo</span> livro li é gaúcho.</div>
+    </div>
+    <div class="concept-card">
+      <h3>onde</h3>
+      <p>Retoma lugar; pode ser substituído por "no(a) qual".</p>
+      <div class="ex-box">A escola <span class="rel">onde</span> estudo é antiga.</div>
+    </div>
+    <div class="concept-card">
+      <h3>quem</h3>
+      <p>Refere-se a pessoas, geralmente precedido de preposição.</p>
+      <div class="ex-box">O colega de <span class="rel">quem</span> falei chegou.</div>
+    </div>
+  </div>
+</section>
+
+<section id="tipos">
+  <div class="section-head">
+    <span class="eyebrow">03 — Classificação</span>
+    <h2>Restritiva × Explicativa</h2>
+    <p>A mesma estrutura sintática pode mudar de sentido — e de pontuação — dependendo da intenção de quem escreve.</p>
+  </div>
+
+  <div class="compare">
+    <div class="compare-card restritiva">
+      <span class="sub-tag">Sem vírgula</span>
+      <h3>Restritiva</h3>
+      <p>Restringe, delimita o sentido do antecedente. Sem ela, a frase muda de significado — ela é essencial para identificar exatamente "qual" elemento está sendo citado.</p>
+      <div class="mini-ex">Os alunos <span style="text-decoration:underline">que estudaram</span> passaram na prova.<br><small style="opacity:0.8">(só esses — não todos os alunos)</small></div>
+    </div>
+    <div class="compare-card explicativa">
+      <span class="sub-tag">Entre vírgulas</span>
+      <h3>Explicativa</h3>
+      <p>Apenas acrescenta uma informação extra, como uma curiosidade sobre algo que já está plenamente identificado. Pode ser retirada sem alterar o sentido essencial da frase.</p>
+      <div class="mini-ex">Os alunos, <span style="text-decoration:underline">que estudaram muito</span>, passaram na prova.<br><small style="opacity:0.8">(todos os alunos — comentário extra)</small></div>
+    </div>
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="section-head">
+    <span class="eyebrow">04 — Pratique</span>
+    <h2>Questões sobre o conteúdo</h2>
+    <p>Dez questões de fixação. Escolha uma alternativa para receber o feedback na hora.</p>
+  </div>
+
+  <div class="quiz-wrap">
+    <div class="quiz-head">
+      <h2 id="quizTitle">Questão 1 de 10</h2>
+      <div class="progress-track">
+        <span id="progressLabel">0%</span>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+    </div>
+
+    <div id="quiz-area"></div>
+
+    <div class="result-card" id="resultCard">
+      <div class="big" id="resultScore">0/10</div>
+      <p id="resultMsg">Resultado</p>
+      <button class="quiz-btn" onclick="restartQuiz()">Refazer questões</button>
+    </div>
+  </div>
+</section>
+
+<section id="roleta" class="roleta-section">
+  <div class="section-head">
+    <span class="eyebrow">05 — Sorteio</span>
+    <h2>Roleta de chamada</h2>
+    <p>Gire a roleta para sortear o próximo aluno a responder. Quem já foi sorteado fica marcado na lista — use "reiniciar" para liberar todo mundo de novo.</p>
+  </div>
+
+  <div class="roleta-grid">
+    <div class="wheel-stage">
+      <div class="wheel-frame">
+        <div class="pointer"></div>
+        <canvas id="wheelCanvas" width="600" height="600"></canvas>
+        <div class="hub">SORTEIO</div>
+      </div>
+      <button class="spin-btn" id="spinBtn" onclick="spinWheel()">Girar a roleta</button>
+      <div class="winner-banner" id="winnerBanner">Clique em "girar" para sortear um aluno.</div>
+    </div>
+
+    <div class="roster-panel">
+      <h3>Turma</h3>
+      <div class="hint" id="rosterHint">18 alunos na roleta</div>
+      <ul class="roster-list" id="rosterList"></ul>
+      <div class="roster-actions">
+        <button class="ghost-btn" onclick="resetRoster()">Reiniciar todos</button>
+        <button class="ghost-btn" onclick="removePickedFromWheel()">Tirar sorteados da roda</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="brand"><span class="mark" style="width:22px;height:22px;"></span> Subordinada Adjetiva</div>
+  <span>Material de apoio — Língua Portuguesa</span>
+</footer>
+
+<script>
+/* =========================================================
+   QUIZ
+========================================================= */
+const questions = [
+  {
+    q: 'Em "A casa que fica na esquina foi vendida", a oração destacada é classificada como:',
+    options: [
+      'Subordinada substantiva subjetiva',
+      'Subordinada adjetiva restritiva',
+      'Subordinada adverbial causal',
+      'Coordenada sindética aditiva'
+    ],
+    correct: 1,
+    explain: '"que fica na esquina" caracteriza "a casa" e restringe qual casa está sendo mencionada — não há vírgula, então é restritiva.'
+  },
+  {
+    q: 'Qual pronome relativo indica posse e concorda em gênero/número com o termo que vem depois dele?',
+    options: ['onde', 'quem', 'cujo', 'que'],
+    correct: 2,
+    explain: '"Cujo/cuja/cujos/cujas" indicam posse e concordam com o substantivo que os segue, nunca com o antecedente. Ex.: "O autor cujo livro li."'
+  },
+  {
+    q: 'Assinale a frase em que a oração adjetiva é EXPLICATIVA:',
+    options: [
+      'Os funcionários que chegaram atrasados foram advertidos.',
+      'Os funcionários, que chegaram atrasados, foram advertidos.',
+      'Os funcionários que trabalham bem serão promovidos.',
+      'O livro que comprei está na mesa.'
+    ],
+    correct: 1,
+    explain: 'O uso das vírgulas isolando "que chegaram atrasados" indica que é apenas uma informação adicional sobre todos os funcionários — característica da explicativa.'
+  },
+  {
+    q: 'Em "A cidade onde nasci é pequena", o termo "onde" pode ser substituído, sem perda de sentido, por:',
+    options: ['a qual', 'na qual', 'cuja', 'quem'],
+    correct: 1,
+    explain: '"Onde" equivale a "em que / na qual" quando retoma um lugar. "A cidade na qual nasci é pequena" mantém o mesmo sentido.'
+  },
+  {
+    q: 'Toda oração subordinada adjetiva exerce, na oração principal, função equivalente a um(a):',
+    options: ['advérbio', 'substantivo', 'adjetivo', 'verbo'],
+    correct: 2,
+    explain: 'A subordinada adjetiva caracteriza um substantivo ou pronome, assim como um adjetivo faria — por isso recebe esse nome.'
+  },
+  {
+    q: 'Marque a alternativa em que falta a vírgula obrigatória de uma oração adjetiva explicativa:',
+    options: [
+      'O Brasil que é um país tropical tem clima variado.',
+      'Meu irmão, que mora em Pelotas, vem nos visitar.',
+      'Os alunos que estudaram passaram.',
+      'A casa onde moro é confortável.'
+    ],
+    correct: 0,
+    explain: '"O Brasil" já é único e plenamente identificado, então "que é um país tropical" é explicativa e precisa de vírgulas: "O Brasil, que é um país tropical, tem clima variado."'
+  },
+  {
+    q: 'Em "Conheço alguém a quem você admira", a oração adjetiva tem como antecedente:',
+    options: ['"Conheço"', '"alguém"', '"você"', '"admira"'],
+    correct: 1,
+    explain: '"A quem" retoma "alguém", a pessoa sobre a qual a informação "você admira" está sendo acrescentada.'
+  },
+  {
+    q: 'Qual das frases abaixo NÃO contém uma oração subordinada adjetiva?',
+    options: [
+      'O carro que comprei é novo.',
+      'Espero que você venha à festa.',
+      'A rua onde cresci mudou muito.',
+      'O professor cujo método é eficaz foi premiado.'
+    ],
+    correct: 1,
+    explain: '"Espero que você venha à festa" traz uma subordinada substantiva objetiva direta (não há antecedente sendo caracterizado), e não uma adjetiva.'
+  },
+  {
+    q: 'Transformando "Comprei um quadro. O quadro é muito valioso." em um período com oração adjetiva, obtemos:',
+    options: [
+      'Comprei um quadro e ele é muito valioso.',
+      'Comprei um quadro que é muito valioso.',
+      'Comprei um quadro, mas é muito valioso.',
+      'Comprei um quadro porque é muito valioso.'
+    ],
+    correct: 1,
+    explain: 'O pronome relativo "que" substitui a repetição de "o quadro" e une as duas ideias em uma oração adjetiva: "...quadro que é muito valioso."'
+  },
+  {
+    q: 'Sobre a diferença entre restritiva e explicativa, é correto afirmar que:',
+    options: [
+      'A explicativa nunca pode ser retirada da frase sem mudar o sentido.',
+      'A restritiva é sempre separada por vírgulas.',
+      'A restritiva delimita o sentido do antecedente; a explicativa apenas acrescenta uma informação a mais.',
+      'Não existe diferença de pontuação entre elas.'
+    ],
+    correct: 2,
+    explain: 'A restritiva é necessária para indicar exatamente "qual" elemento (sem vírgula); a explicativa é um comentário a mais sobre algo já identificado (com vírgulas).'
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = [];
+
+function renderQuiz(){
+  const area = document.getElementById('quiz-area');
+  area.innerHTML = '';
+  questions.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'question-card' + (i === current ? ' active' : '');
+    card.id = 'q-' + i;
+
+    const letters = ['A','B','C','D'];
+    let optsHtml = '';
+    item.options.forEach((opt, oi) => {
+      optsHtml += `<button class="opt" data-i="${oi}" onclick="selectOption(${i},${oi})"><span class="letter">${letters[oi]}</span><span>${opt}</span></button>`;
+    });
+
+    card.innerHTML = `
+      <span class="q-tag">Pergunta ${i+1}</span>
+      <p class="q-text">${item.q}</p>
+      <div class="options">${optsHtml}</div>
+      <div class="feedback" id="fb-${i}"></div>
+      <div class="quiz-nav">
+        <button class="quiz-btn" onclick="prevQuestion()" ${i===0?'disabled':''}>← Anterior</button>
+        <span class="score-pill">Pontos: <strong id="scoreLive">${score}</strong>/10</span>
+        <button class="quiz-btn" id="next-${i}" onclick="nextQuestion()" disabled>${i===questions.length-1?'Ver resultado':'Próxima →'}</button>
+      </div>
+    `;
+    area.appendChild(card);
+  });
+  updateProgress();
+}
+
+function selectOption(qIndex, oIndex){
+  if(answered[qIndex] !== undefined) return;
+  answered[qIndex] = oIndex;
+  const item = questions[qIndex];
+  const card = document.getElementById('q-'+qIndex);
+  const opts = card.querySelectorAll('.opt');
+  opts.forEach((btn, idx) => {
+    btn.classList.add('disabled');
+    if(idx === item.correct) btn.classList.add('correct');
+    if(idx === oIndex && oIndex !== item.correct) btn.classList.add('wrong');
+  });
+  const fb = document.getElementById('fb-'+qIndex);
+  const isCorrect = oIndex === item.correct;
+  if(isCorrect){ score++; }
+  fb.className = 'feedback show ' + (isCorrect ? 'ok' : 'bad');
+  fb.innerHTML = (isCorrect ? '<strong>Correto!</strong> ' : '<strong>Não foi essa.</strong> ') + item.explain;
+  document.getElementById('next-'+qIndex).disabled = false;
+  document.getElementById('scoreLive').textContent = score;
+}
+
+function nextQuestion(){
+  if(current < questions.length - 1){
+    document.getElementById('q-'+current).classList.remove('active');
+    current++;
+    document.getElementById('q-'+current).classList.add('active');
+    updateProgress();
+  } else {
+    showResult();
+  }
+}
+
+function prevQuestion(){
+  if(current > 0){
+    document.getElementById('q-'+current).classList.remove('active');
+    current--;
+    document.getElementById('q-'+current).classList.add('active');
+    updateProgress();
+  }
+}
+
+function updateProgress(){
+  document.getElementById('quizTitle').textContent = `Questão ${current+1} de ${questions.length}`;
+  const pct = Math.round(((current) / questions.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = pct + '%';
+}
+
+function showResult(){
+  document.getElementById('quiz-area').style.display = 'none';
+  document.querySelector('.quiz-head').style.display = 'none';
+  const rc = document.getElementById('resultCard');
+  rc.classList.add('active');
+  document.getElementById('resultScore').textContent = score + '/10';
+  let msg = '';
+  if(score === 10) msg = 'Perfeito! Você domina as orações subordinadas adjetivas.';
+  else if(score >= 7) msg = 'Muito bom! Só alguns detalhes para revisar.';
+  else if(score >= 4) msg = 'Bom começo — releia a teoria e tente novamente.';
+  else msg = 'Vamos revisar a matéria juntos antes de tentar de novo.';
+  document.getElementById('resultMsg').textContent = msg;
+}
+
+function restartQuiz(){
+  current = 0; score = 0; answered = [];
+  document.getElementById('resultCard').classList.remove('active');
+  document.getElementById('quiz-area').style.display = 'block';
+  document.querySelector('.quiz-head').style.display = 'flex';
+  renderQuiz();
+}
+
+renderQuiz();
+
+/* =========================================================
+   ROLETA
+========================================================= */
+const allStudents = [
+  "AUGUSTO MACHADO DA CRUZ MACEDO",
+  "DANIEL VARGAS GONÇALVES",
+  "DERICK ROSA MACIEL",
+  "GIOVANNA VANTI ORVIEDO",
+  "IGOR LUIZ BERTOLO JORNOOKI",
+  "KAUAN GARCIA TORRES",
+  "LUCAS SOARES GRANDI",
+  "MALU ALVES",
+  "MARIA EDUARDA DA ROSA BERGAMO",
+  "MARIA EDUARDA ROMAN DA SILVEIRA",
+  "MARIA LUIZA DE MELLO TEIXEIRA",
+  "MÁRCIO ERICK OLIVEIRA CUNHA",
+  "MIGUEL DE BRUM FERNANDES",
+  "NICOLLY LOPES CORRÊA",
+  "PABLO MOREIRA SOUZA",
+  "PEDRO HENRIQUE MONCKS DE OLIVEIRA",
+  "PEDRO HENRIQUE SANTOS BELMONTE",
+  "VALENTINE LEQUES TORBIS ROCHA"
+];
+
+let wheelStudents = [...allStudents];
+let pickedSet = new Set();
+let isSpinning = false;
+let currentRotation = 0;
+
+const colors = ['#244A30','#3C6E47','#C2542E','#D9A441','#5C7B5E','#A8632F'];
+
+const canvas = document.getElementById('wheelCanvas');
+const ctx = canvas.getContext('2d');
+
+function shortLabel(name){
+  const parts = name.trim().split(' ');
+  return parts[0].length > 11 ? parts[0].slice(0,10)+'.' : parts[0];
+}
+
+function drawWheel(){
+  const n = wheelStudents.length;
+  const cx = canvas.width/2, cy = canvas.height/2, r = canvas.width/2 - 6;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  if(n === 0){
+    ctx.fillStyle = '#FBF7EF';
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#1F2A24';
+    ctx.font = '600 22px Space Grotesk, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('Sem alunos na roda', cx, cy);
+    return;
+  }
+
+  const anglePer = (Math.PI*2)/n;
+  for(let i=0;i<n;i++){
+    const start = i*anglePer;
+    const end = start+anglePer;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,start,end);
+    ctx.closePath();
+    ctx.fillStyle = colors[i % colors.length];
+    ctx.fill();
+
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(start + anglePer/2);
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#FBF7EF';
+    ctx.font = '600 15px Space Grotesk, sans-serif';
+    ctx.fillText(shortLabel(wheelStudents[i]), r - 18, 0);
+    ctx.restore();
+  }
+}
+
+drawWheel();
+
+function spinWheel(){
+  if(isSpinning) return;
+  if(wheelStudents.length === 0){
+    document.getElementById('winnerBanner').innerHTML = 'Não há mais alunos na roda. Clique em "reiniciar todos".';
+    return;
+  }
+  isSpinning = true;
+  document.getElementById('spinBtn').disabled = true;
+  document.getElementById('winnerBanner').textContent = 'Girando...';
+
+  const n = wheelStudents.length;
+  const anglePer = 360/n;
+  const winnerIndex = Math.floor(Math.random()*n);
+  // pointer is at top (12 o'clock). Canvas drawing starts angle 0 at 3 o'clock (right), going clockwise.
+  // We want winnerIndex slice center to land at top (-90deg / 270deg).
+  const sliceCenterDeg = winnerIndex*anglePer + anglePer/2;
+  const extraSpins = 5*360;
+  // rotate so that sliceCenterDeg ends up at top: rotation needed = 270 - sliceCenterDeg (mod 360), plus full spins
+  const targetOffset = (270 - sliceCenterDeg + 360*10) % 360;
+  const finalRotation = currentRotation + extraSpins + targetOffset;
+
+  canvas.style.transform = `rotate(${finalRotation}deg)`;
+  currentRotation = finalRotation % 360;
+
+  setTimeout(() => {
+    const winner = wheelStudents[winnerIndex];
+    pickedSet.add(winner);
+    document.getElementById('winnerBanner').innerHTML = 'Aluno sorteado: <span class="name-reveal">' + winner + '</span>';
+    isSpinning = false;
+    document.getElementById('spinBtn').disabled = false;
+    renderRoster();
+  }, 4300);
+}
+
+function renderRoster(){
+  const list = document.getElementById('rosterList');
+  list.innerHTML = '';
+  allStudents.forEach((name, i) => {
+    const li = document.createElement('li');
+    const isPicked = pickedSet.has(name);
+    if(isPicked) li.classList.add('picked');
+    li.innerHTML = `<span><span class="idx">${String(i+1).padStart(2,'0')}</span>${name}</span>` +
+      (isPicked ? `<button onclick="unpick('${name.replace(/'/g,"\\'")}')">desmarcar</button>` : '');
+    list.appendChild(li);
+  });
+  document.getElementById('rosterHint').textContent = `${wheelStudents.length} aluno(s) na roleta · ${pickedSet.size} já sorteado(s)`;
+}
+
+function unpick(name){
+  pickedSet.delete(name);
+  if(!wheelStudents.includes(name)){
+    wheelStudents.push(name);
+    drawWheel();
+  }
+  renderRoster();
+}
+
+function resetRoster(){
+  pickedSet.clear();
+  wheelStudents = [...allStudents];
+  currentRotation = 0;
+  canvas.style.transition = 'none';
+  canvas.style.transform = 'rotate(0deg)';
+  requestAnimationFrame(() => { canvas.style.transition = 'transform 4.2s cubic-bezier(.17,.89,.32,1.13)'; });
+  document.getElementById('winnerBanner').textContent = 'Clique em "girar" para sortear um aluno.';
+  drawWheel();
+  renderRoster();
+}
+
+function removePickedFromWheel(){
+  wheelStudents = wheelStudents.filter(n => !pickedSet.has(n));
+  drawWheel();
+  renderRoster();
+}
+
+renderRoster();
+</script>
+
+</body>
+</html>
